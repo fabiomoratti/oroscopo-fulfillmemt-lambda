@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Simple DialogFlow fulfillment service implemented in AWS Lambda
+
+Globals:
+  Function:
+    Timeout: 10
+
+Resources:
+  FulfillmentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.7
+      CodeUri: oroscopo_fulfillment/
+      Handler: fulfillment.fulfillment
+      Events:
+        Fulfillment:
+          Type: Api
+          Properties:
+            Path: /fulfillment
+            Method: any
+
+Outputs:
+  FulfillmentApi:
+    Description: "Fulfillment API endpoint"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/fulfillment"
+  FulfillmentFunction:
+    Description: "Fulfillment Lambda"
+    Value: !GetAtt FulfillmentFunction.Arn
+  FulfillmentFunctionIamRole:
+    Description: "Role to make it happen"
+    Value: !GetAtt FulfillmentFunctionRole.Arn
